@@ -81,6 +81,7 @@ class Body:
         self.mass = mass
         self.x = x
         self.y = y
+        self.force = 0
     
     def is_in_quadrant(self, quadrant):
         """A method that checks if the given body is contained within the specified
@@ -96,8 +97,8 @@ class Body:
         is_contained = quadrant.contains(self.x, self.y)
         return is_contained
 
-    def add(self, first_body, second_body):
-        """A method that calculates the center of mass given two bodies, anc creates
+    def add(self, second_body):
+        """A method that calculates the center of mass given two bodies, and creates
         a new body on the given data
 
         Args:
@@ -108,7 +109,7 @@ class Body:
             class Body: Another body.
         """
         
-        m_1, x_1, y_1 = first_body.mass, first_body.x, first_body.y
+        m_1, x_1, y_1 = self.mass, self.x, self.y
         m_2, x_2, y_2 = second_body.mass, second_body.x, second_body.y
         
         m_cm = m_1 + m_2
@@ -125,7 +126,7 @@ class BHTree:
         self.quadrant = quadrant
         self.divided = False
         self.body = None
-        
+                
     def divide(self):
         """Creates a BHtree representing each quadrant
         """
@@ -153,7 +154,15 @@ class BHTree:
             self.body = body
             return True
         elif not self.divided:
+            # If there is at least one body, we have to divide the tree and insert
+            # the body
             self.divide()
+            self.nw.insert(self.body)
+            self.ne.insert(self.body)
+            self.sw.insert(self.body)
+            self.se.insert(self.body)
+            
+        self.body = body.add(self.body)
         
-        return (self.nw.insert(body) or self.nw.insert(body) or
+        return (self.nw.insert(body) or self.ne.insert(body) or
                 self.sw.insert(body) or self.se.insert(body))
