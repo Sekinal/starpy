@@ -32,4 +32,4 @@ def test_individual_node_mass():
     sw_quadrant = bhquadrant.sw
     se_quadrant = bhquadrant.se
     
-    assert sw_quadrant.body.mass == 100
+    assert sw_quadrant.body.mass == 100 and se_quadrant.body.mass == 100
